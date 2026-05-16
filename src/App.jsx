@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const App = () => {
-  const getData = () => {
-    console.log("data agaya hai");
+
+  const [userData, setuserData] = useState([]);
+
+  const getData = async() => {
+    // console.log("data agaya hai");
+    const response = await axios.get('https://picsum.photos/v2/list?page=2&limit=30');
+    // console.log(response.data);
+    setuserData(response.data)
+    
   };
+  let printUserData = 'No user Data available';
+  if(userData.length>0){
+    printUserData = userData.map(function(e , index){
+      return <div>
+        <img src={e.download_url} alt="" />
+      </div>
+
+    })
+  }
   return (
     <div className="bg-black h-screen text-white p-4">
       <button
@@ -14,6 +31,9 @@ const App = () => {
       >
         Get Data
       </button>
+      <div>
+        {printUserData}
+      </div>
     </div>
   );
 };
