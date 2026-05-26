@@ -6,70 +6,92 @@ const App = () => {
   const [idx, setidx] = useState(1);
 
   const getData = async () => {
-    // console.log("data agaya hai");
-    const response = await axios.get(`https://picsum.photos/v2/list?page=${idx}&limit=21`
+    const response = await axios.get(
+      `https://picsum.photos/v2/list?page=${idx}&limit=10`
     );
-    console.log(response.data);
+
     setuserData(response.data);
   };
-  useEffect(function () {
+
+  useEffect(() => {
     getData();
   }, [idx]);
 
-  let printUserData = (
-    <h3 className="text-gray-400 text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"> Loading...</h3>
-  );
-  if (userData.length > 0) {
-    printUserData = userData.map(function (e, index) {
-      return (
-        <div key={index}>
-          <a href={e.url} target="_blank">
-            <div className="h-40 w-44 rounded-xl overflow-hidden">
-              <img
-                className="h-full w-full object-cover"
-                src={e.download_url}
-                alt=""
-              />
-            </div>
-            <h2 className="font-normal ">{e.author}</h2>
-          </a>
-        </div>
-      );
-    });
-  }
   return (
-    <div className="bg-black h-screen overflow-auto text-white p-4">
-      {/* <h1 className="fixed bg-amber-400 text-black px-2 py-1 rounded">{idx}</h1> */}
-      {/* <button
-        onClick={() => {
-          getData();
-        }}
-        className="bg-green-600 text-white px-5 py-2 rounded mb-3 active:scale-95 "
-      >
-        Get Data
-      </button> */}
-      <div className="flex flex-wrap m-10 gap-4">{printUserData}</div>
-      <div className="flex justify-center items-center p-10 gap-4 ">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 py-10">
+      
+      <h1 className="text-4xl font-bold text-center mb-10 tracking-wide">
+        Image Gallery
+      </h1>
+
+      {/* Images */}
+      <div className="flex flex-wrap justify-center gap-6">
+        {userData.length > 0 ? (
+          userData.map((e, index) => {
+            return (
+              <a
+                key={index}
+                href={e.url}
+                target="_blank"
+                className="bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 w-64"
+              >
+                <div className="h-52 overflow-hidden">
+                  <img
+                    className="h-full w-full object-cover"
+                    src={e.download_url}
+                    alt=""
+                  />
+                </div>
+
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold truncate">
+                    {e.author}
+                  </h2>
+
+                  <p className="text-gray-400 text-sm mt-1">
+                    Click to view image
+                  </p>
+                </div>
+              </a>
+            );
+          })
+        ) : (
+          <div className="flex justify-center items-center h-[50vh] w-full">
+            <div className="h-14 w-14 border-4 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-5 mt-14">
         <button
-        style={{opacity: idx== 1? 0.5 : 1}}
+          disabled={idx === 1}
           onClick={() => {
             if (idx > 1) {
               setidx(idx - 1);
               setuserData([]);
             }
           }}
-          className="bg-amber-400 text-sm active:scale-95 text-black rounded px-4 py-2 font-bold"
+          className={`px-6 py-2 rounded-xl font-semibold transition-all duration-200
+          ${
+            idx === 1
+              ? "bg-gray-700 cursor-not-allowed"
+              : "bg-amber-400 text-black hover:scale-95"
+          }`}
         >
           Prev
         </button>
-        <h2 className="bg-gray-900 px-4 py-2 rounded-xl text-sm">Page {idx}</h2>
+
+        <div className="bg-gray-800 px-6 py-2 rounded-xl text-lg font-medium shadow-md">
+          Page {idx}
+        </div>
+
         <button
           onClick={() => {
             setidx(idx + 1);
             setuserData([]);
-            
           }}
-          className="bg-amber-400 text-sm active:scale-95 text-black  rounded px-4 py-2 font-bold"
+          className="bg-amber-400 text-black px-6 py-2 rounded-xl font-semibold hover:scale-95 transition-all duration-200"
         >
           Next
         </button>
